@@ -87,10 +87,15 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
          proc: proc(&:to_i)
 
   def aws_config
-    { access_key_id: config[:aws_access_key],
+    cfg = {
+      access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
       region: config[:aws_region]
     }
+    if ENV['HTTP_PROXY']
+      cfg[:proxy_uri] = ENV['HTTP_PROXY']
+    end
+    cfg
   end
 
   def run
